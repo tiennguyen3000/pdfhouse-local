@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PDF House Local — bộ công cụ PDF</title>
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/editor.css" />
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/" id="homeLink">
+    <span class="logo">▤</span>
+    <div>
+      <strong>PDF House Local</strong>
+      <small>Bộ công cụ PDF chạy trên máy bạn</small>
+    </div>
+  </a>
+  <span class="pill">local · không upload lên cloud</span>
+</header>
+
+<main>
+  <!-- ---------------------------------------------------------- tool grid -->
+  <section id="homeSection">
+    <div class="hero">
+      <h1>Mọi công cụ PDF, chạy ngay trên máy anh</h1>
+      <p>Gộp, chia, xoá trang, watermark, ký, nén, khoá mật khẩu, chuyển đổi PDF ↔ Word / Excel / PPTX / ảnh. File không rời khỏi máy, không giới hạn lượt dùng.</p>
+    </div>
+    <div id="toolGroups"></div>
+  </section>
+
+  <!-- ----------------------------------------------------------- workspace -->
+  <section id="workSection" class="hidden">
+    <button type="button" class="back" id="backBtn">← Tất cả công cụ</button>
+
+    <div class="work-head">
+      <span class="tool-icon" id="workIcon">⇄</span>
+      <div>
+        <h2 id="workTitle">Hợp nhất PDF</h2>
+        <p id="workDesc" class="muted"></p>
+      </div>
+    </div>
+
+    <div id="dropzone" class="dropzone" tabindex="0">
+      <input id="fileInput" type="file" multiple hidden />
+      <div class="dz-icon">＋</div>
+      <div class="dz-title" id="dzTitle">Thả file PDF vào đây</div>
+      <div class="dz-sub">hoặc <button type="button" id="browseBtn" class="link">chọn file từ máy</button></div>
+      <div class="dz-hint" id="dzHint">Tối đa 30 file · 100 MB/file · 400 MB tổng</div>
+    </div>
+
+    <div id="fileList" class="file-list"></div>
+
+    <!-- ------------------------------------------------------------ editor -->
+    <section id="editorPanel" class="editor hidden">
+      <div class="ed-toolbar">
+        <div class="ed-group" id="edModes">
+          <button type="button" class="mode active" data-mode="text">Chữ</button>
+          <button type="button" class="mode" data-mode="image">Ảnh</button>
+          <button type="button" class="mode" data-mode="highlight">Highlight</button>
+          <button type="button" class="mode" data-mode="rect">Khung</button>
+          <button type="button" class="mode" data-mode="arrow">Mũi tên</button>
+          <button type="button" class="mode" data-mode="redact">Xoá vùng</button>
+        </div>
+        <div class="ed-group" id="edTextOpts">
+          <input id="edText" type="text" placeholder="Nội dung chữ…" />
+          <input id="edSize" type="number" value="14" min="6" max="96" title="Cỡ chữ (pt)" />
+          <input id="edColor" type="color" value="#111111" title="Màu" />
+          <select id="edAlign" title="Căn lề">
+            <option value="left">Trái</option>
+            <option value="center">Giữa</option>
+            <option value="right">Phải</option>
+          </select>
+        </div>
+        <div class="ed-group">
+          <button type="button" class="ghost" id="edUndo">↶ Hoàn tác</button>
+          <button type="button" class="ghost" id="edClear">Xoá hết</button>
+        </div>
+      </div>
+
+      <div id="edImageRow" class="ed-imagerow hidden">
+        <input id="edImageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+        <button type="button" class="ghost" id="edImageBtn">＋ Chọn ảnh để chèn</button>
+        <span id="edImageName" class="muted">chưa có ảnh</span>
+      </div>
+
+      <div class="ed-stage">
+        <button type="button" class="icon-btn" id="edPrev" title="Trang trước">←</button>
+        <div class="ed-canvas" id="edCanvas">
+          <img id="edPageImg" alt="trang PDF" />
+          <div id="edOverlay" class="ed-overlay"></div>
+          <div id="edRubber" class="ed-rubber hidden"></div>
+        </div>
+        <button type="button" class="icon-btn" id="edNext" title="Trang sau">→</button>
+      </div>
+
+      <div class="ed-foot">
+        <span id="edPageInfo" class="muted">Trang 1</span>
+        <span id="edHint" class="muted">Kéo chuột trên trang để tạo vùng chữ</span>
+        <span class="grow"></span>
+        <button type="button" id="edApply" class="primary">Áp dụng &amp; tải về</button>
+        <span id="edStatus" class="status"></span>
+      </div>
+    </section>
+
+    <div class="options" id="imageSlot" hidden>
+      <label class="upload-inline">
+        <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+        <button type="button" class="ghost" id="imageBtn">＋ Chọn ảnh</button>
+        <span id="imageName" class="muted">chưa có ảnh</span>
+      </label>
+    </div>
+
+    <div class="options" id="optionsBox"></div>
+
+    <div class="actions">
+      <button type="button" id="runBtn" class="primary">Chạy</button>
+      <span id="status" class="status"></span>
+    </div>
+
+    <div id="resultSection" class="result hidden">
+      <div class="result-card">
+        <div class="ok">✓</div>
+        <div class="grow">
+          <strong id="resultName">ket-qua.pdf</strong>
+          <div id="resultMeta" class="muted"></div>
+        </div>
+        <a id="downloadLink" class="primary" download>Tải xuống</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>PDF House Local · PyMuPDF + LibreOffice · file tạm tự xoá sau 2 giờ</span>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>
